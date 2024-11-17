@@ -1,7 +1,6 @@
-import Auth from "../models/auth"
+import { Auth } from "../../models/auth.js";
 import bcrypt from "bcrypt"
-import { generateError } from "../../utils/generateError";
-import database from "../database"
+import { generateError } from "../../utils/generateError.js";
 
 export async function registerAuthService(data){
     try{
@@ -10,7 +9,7 @@ export async function registerAuthService(data){
         const user = await Auth.create({
             email: data.email,
             password: hashedPassword,
-            admin: data?.admin,
+            admin: data?.admin || false,
         });
 
         if(!user) generateError("Error al crear el usuario", 500);
@@ -21,8 +20,36 @@ export async function registerAuthService(data){
     }
 }
 
-export async function loginAuthService(data){
+export async function getAuthsService(){
+    try{
+        const users = await Auth.findAll();
 
+        if(!users) generateError("Users not found", 404);
+
+        return users;
+    }catch(error){
+        generateError(error.message, error.status);
+    }
+}
+
+
+export async function getAuthService(email){
+    try{
+        const user = await Auth.findOne({
+            where: {
+                email: email,
+            }
+        });
+
+        if(!user) generateError("User not found", 404);
+
+        return user;
+    }catch(error){
+        generateError(error.message, error.status);
+    }
+}
+
+export async function loginAuthService(data){
     try{
         const user = await Auth.findOne({
             where: {

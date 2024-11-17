@@ -29,8 +29,6 @@ export async function authentication(req, res, next) {
                                 const newRefreshToken = jwt.sign(
                                     { 
                                         email: refreshTokenInfo.email,
-                                        username: refreshTokenInfo.username,
-                                        role: refreshTokenInfo.role,
                                     },
                                     process.env.REFRESH_TOKEN_SECRET,
                                     { expiresIn: "1d" }
@@ -45,7 +43,9 @@ export async function authentication(req, res, next) {
                             }
 
                             const newToken = jwt.sign(
-                                { email: refreshTokenInfo.email },
+                                { 
+                                    email: refreshTokenInfo.email,
+                                },
                                 process.env.JWT_SECRET,
                                 { expiresIn: "15m" }
                             );

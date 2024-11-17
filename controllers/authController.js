@@ -1,17 +1,17 @@
-import { loginAuthService, registerAuthService } from '../db/services/authService';
-import schemaAuth from '../utils/schemaAuth';
+import { loginAuthService, registerAuthService, getAuthService, getAuthsService } from '../db/services/authService.js';
+import { authSchema } from '../schemas/authSchema.js';
+import { authLoginSchema } from '../schemas/authLoginSchema.js';
 import jwt from 'jsonwebtoken';
 
 export async function loginCallBack(req, res, next) {
     try {
-        const validate = schemaAuth.validateAsync(req.body);
+        const validate = await authLoginSchema.validateAsync(req.body);
 
         const user = await loginAuthService(validate);
 
         const token = jwt.sign(
             { 
                 email: user.email,
-                admin: user.role
             }, 
             process.env.JWT_SECRET,
             { 
@@ -22,7 +22,6 @@ export async function loginCallBack(req, res, next) {
         const refreshToken = jwt.sign(
             { 
                 email: user.email,
-                admin: user.role 
             }, 
             process.env.JWT_SECRET,
             { 
@@ -38,7 +37,6 @@ export async function loginCallBack(req, res, next) {
         });
 
         res.status(200).json({
-            status: 200,
             user,
             token,
         });
@@ -49,13 +47,38 @@ export async function loginCallBack(req, res, next) {
 
 export async function register(req, res, next) {
     try {
-        const validate = await schemaAuth.validateAsync(req.body);
+        const validate = await authSchema.validateAsync(req.body);
 
-        const newUser = await registerAuthService(validate);
+        const user = await registerAuthService(validate);
 
         res.status(201).json({
-            status: 201,
-            user: newUser,
+            user,
+        });
+    }catch(error){
+        next(error);
+    }
+}
+
+export async function getUserAuth(req, res, next) {
+    try {
+        const { email } = req.params;
+
+        const user = await getAuthService(email);
+
+        res.status(200).json({
+            user,
+        });
+    }catch(error){
+        next(error);
+    }
+}
+
+export async function getUsersAuth(req, res, next) {
+    try {
+        const users = await getAuthsService();
+
+        res.status(200).json({
+            users,
         });
     }catch(error){
         next(error);

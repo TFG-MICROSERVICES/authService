@@ -1,7 +1,7 @@
 import { DataTypes, Model } from "sequelize"
-import database from "../db/database"
+import database from "../db/database.js"
 
-const Auth = database.define("Auth", {
+export const Auth = database.define("Auth", {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -16,6 +16,9 @@ const Auth = database.define("Auth", {
         type: DataTypes.STRING,
         allowNull: false,
     },
+    admin: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+    }
 });
-
-module.exports = Auth;
