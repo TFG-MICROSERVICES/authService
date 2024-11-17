@@ -1,0 +1,44 @@
+# Dependencias de Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Logs
+logs/
+*.log
+
+# Archivos de entorno
+.env
+.env.local
+.env.*.local
+
+# Datos temporales
+/tmp
+/.sass-cache
+/connect.session*
+/coverage
+package-lock.json
+
+# Cache de paquetes
+.pnpm-debug.log*
+.npm/
+
+# Configuración del editor
+.vscode/
+.idea/
+*.swp
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+*.~undo-tree~
+
+# Construcciones
+/build
+/dist
+
+# Otros
+*.tgz
+*.bak
+*.orig
