@@ -9,7 +9,7 @@ import { EventEmitter } from 'events';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 
 //UTILITIES
 EventEmitter.defaultMaxListeners = 30;
