@@ -36,8 +36,6 @@ export async function loginCallBack(req, res, next) {
             maxAge: 24 * 60 * 60 * 1000,
         });
 
-        console.log(res.cookie);
-
         res.status(200).json({
             user,
             token,
