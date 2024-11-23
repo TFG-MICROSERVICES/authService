@@ -5,11 +5,12 @@ import { generateError } from "../../utils/generateError.js";
 export async function registerAuthService(data){
     try{
         const hashedPassword = await bcrypt.hash(data.password, 10);
+        data.admin = false;
 
         const user = await Auth.create({
             email: data.email,
             password: hashedPassword,
-            admin: data?.admin || false,
+            admin: data.admin,
         });
 
         if(!user) generateError("Error al crear el usuario", 500);

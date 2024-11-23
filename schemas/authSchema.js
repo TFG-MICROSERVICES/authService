@@ -2,15 +2,11 @@ import Joi from "joi";
 
 export const authSchema = Joi.object({
     email: Joi.string().email().required().messages({
-        "string.email": "El email debe ser un email válido",
-        "any.required": "El email es requerido",
+        "string.email": "The email must be a valid email",
+        "any.required": "The email is required",
     }),
-    password: Joi.string().min(8).required().messages({
-        "string.min": "La contraseña debe tener al menos 8 caracteres",
-        "any.required": "La contraseña es requerida",
-    }),
-    admin: Joi.boolean().default(false).required().messages({
-        "boolean.base": "El campo admin debe ser un booleano",
-        "any.required": "El campo admin es requerido",
+    password: Joi.string().pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*_])[A-Za-z\\d!@#$%^&*_]{8,}$')).required().messages({
+        "string.pattern.base": "The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character",
+        "any.required": "The password is required",
     }),
 });

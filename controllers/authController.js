@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken';
 
 export async function loginCallBack(req, res, next) {
     try {
-        const validate = await authLoginSchema.validateAsync(req.body);
+        const validate = await authLoginSchema.validateAsync(req.body, { stripUnknown: true });
 
         const user = await loginAuthService(validate);
 
@@ -31,8 +31,8 @@ export async function loginCallBack(req, res, next) {
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: true,
-            sameSite: 'none',
+            secure: false,
+            sameSite: 'lax',
             maxAge: 24 * 60 * 60 * 1000,
         });
 
