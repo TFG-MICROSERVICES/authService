@@ -12,7 +12,6 @@ export async function authentication(req, res, next) {
                 return next();
             } catch (error) {
                 if (error.name === "TokenExpiredError") {
-                    console.log("Token expired");
                     const { refreshToken } = req.cookies;
 
                     if (refreshToken) {

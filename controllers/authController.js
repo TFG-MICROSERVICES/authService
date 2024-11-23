@@ -61,7 +61,7 @@ export async function register(req, res, next) {
 
 export async function getUserAuth(req, res, next) {
     try {
-        const { email } = req.params;
+        const { email } = req.user;
 
         const user = await getAuthService(email);
 
