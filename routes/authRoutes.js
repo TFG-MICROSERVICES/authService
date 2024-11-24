@@ -13,15 +13,20 @@ import { validateApiKey } from "../middlewares/validateApiKey.js";
 import { auth } from "../middlewares/auth.js";
 const router = express.Router();
 
+//http://localhost:3001/auth/register
 router.post("/register",validateApiKey, register);
 
+//http://localhost:3001/auth/login
 router.post("/login", validateApiKey, loginCallBack);
 
+//http://localhost:3001/auth/check
 router.get("/check", validateApiKey, authentication, userExists, auth, getUserAuth);
 
+//http://localhost:3001/auth/
 router.get("/", validateApiKey, authentication, userExists, auth, isAdmin, getUsersAuth);
 
-router.delete("/", validateApiKey, deleteUserAuth);
+//http://localhost:3001/auth/:email
+router.delete("/:email", validateApiKey, deleteUserAuth);
 
 
 

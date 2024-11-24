@@ -8,6 +8,7 @@ import {
 import { authSchema } from '../schemas/authSchema.js';
 import { authLoginSchema } from '../schemas/authLoginSchema.js';
 import jwt from 'jsonwebtoken';
+import { generateToken } from '../utils/token/generateToken.js';
 
 export async function loginCallBack(req, res, next) {
     try {
@@ -15,34 +16,17 @@ export async function loginCallBack(req, res, next) {
 
         const user = await loginAuthService(validate);
 
-        const token = jwt.sign(
-            { 
-                email: user.email,
-            }, 
-            process.env.JWT_SECRET,
-            { 
-                expiresIn: '30min' 
-            }
-        );
-
-        const refreshToken = jwt.sign(
-            { 
-                email: user.email,
-            }, 
-            process.env.JWT_SECRET,
-            { 
-                expiresIn: '1d' 
-            }
-        );
+        const { token, refreshToken } = await generateTokens(user);
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: false,
+            secure: false, // Cambia a true si usas HTTPS
             sameSite: 'lax',
-            maxAge: 24 * 60 * 60 * 1000,
+            maxAge: 24 * 60 * 60 * 1000, // 1 día
         });
 
         res.status(200).json({
+            message: "User logged in successfully",
             user,
             token,
         });
@@ -57,9 +41,19 @@ export async function register(req, res, next) {
 
         const user = await registerAuthService(validate);
 
+        const { token, refreshToken } = await generateToken(user);
+
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: false, // Cambia a true si usas HTTPS
+            sameSite: 'lax',
+            maxAge: 24 * 60 * 60 * 1000, // 1 día
+        });
+
         res.status(201).json({
             message: "User registered successfully",
             user,
+            token,
         });
     }catch(error){
         next(error);
@@ -94,7 +88,8 @@ export async function getUsersAuth(req, res, next) {
 
 export async function deleteUserAuth(req, res, next) {
     try {
-        const { email } = req.user;
+        const { email } = req.params;
+        console.log(email);
 
         const user = await deleteAuthService(email);
 
