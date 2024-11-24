@@ -69,3 +69,21 @@ export async function loginAuthService(data){
         generateError(error.message, error.status);
     }
 }
+
+export async function deleteAuthService(email){
+    try{
+        const user = await Auth.findOne({
+            where: {
+                email: email,
+            }
+        });
+
+        if(!user) generateError("User not found", 404);
+
+        await user.destroy();
+
+        return user;
+    }catch(error){
+        generateError(error.message, error.status);
+    }
+}

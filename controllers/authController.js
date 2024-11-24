@@ -1,4 +1,10 @@
-import { loginAuthService, registerAuthService, getAuthService, getAuthsService } from '../db/services/authService.js';
+import { 
+    loginAuthService, 
+    registerAuthService, 
+    getAuthService, 
+    getAuthsService,
+    deleteAuthService,
+} from '../db/services/authService.js';
 import { authSchema } from '../schemas/authSchema.js';
 import { authLoginSchema } from '../schemas/authLoginSchema.js';
 import jwt from 'jsonwebtoken';
@@ -52,6 +58,7 @@ export async function register(req, res, next) {
         const user = await registerAuthService(validate);
 
         res.status(201).json({
+            message: "User registered successfully",
             user,
         });
     }catch(error){
@@ -79,6 +86,22 @@ export async function getUsersAuth(req, res, next) {
 
         res.status(200).json({
             users,
+        });
+    }catch(error){
+        next(error);
+    }
+}
+
+export async function deleteUserAuth(req, res, next) {
+    try {
+        const { email } = req.user;
+
+        const user = await deleteAuthService(email);
+
+        await user.destroy();
+
+        res.status(200).json({
+            message: "User deleted successfully",
         });
     }catch(error){
         next(error);
