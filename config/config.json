@@ -2,9 +2,9 @@
   "development": {
     "username": "desarrollo",
     "password": "426145",
-    "database": "auth_service",
+    "database": "db_auth",
     "host": "127.0.0.1",
-    "dialect": "mysql"
+    "dialect": "postgres"
   },
   "test": {
     "username": "desarrollo",
