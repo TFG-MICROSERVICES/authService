@@ -21,4 +21,6 @@ export const Auth = database.define("Auth", {
         allowNull: false,
         defaultValue: false,
     }
+},{
+    tableName: "Auth",
 });

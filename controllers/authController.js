@@ -43,6 +43,8 @@ export async function register(req, res, next) {
 
         const { token, refreshToken } = await generateToken(user);
 
+        console.log("token",token,"refresh token", refreshToken);
+
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: false, // Cambia a true si usas HTTPS
@@ -56,6 +58,7 @@ export async function register(req, res, next) {
             token,
         });
     }catch(error){
+        console.log(error);
         next(error);
     }
 }
@@ -89,7 +92,6 @@ export async function getUsersAuth(req, res, next) {
 export async function deleteUserAuth(req, res, next) {
     try {
         const { email } = req.params;
-        console.log(email);
 
         const user = await deleteAuthService(email);
 

@@ -26,7 +26,7 @@ router.get("/check", validateApiKey, authentication, userExists, auth, getUserAu
 router.get("/", validateApiKey, authentication, userExists, auth, isAdmin, getUsersAuth);
 
 //http://localhost:3001/auth/:email
-router.delete("/:email", validateApiKey, deleteUserAuth);
+router.delete("/:email", validateApiKey, authentication, isAdmin, deleteUserAuth);
 
 
 
