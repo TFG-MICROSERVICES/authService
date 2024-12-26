@@ -7,7 +7,7 @@ export async function userExists(req, res, next) {
             const { email } = req.user;
             const usuario = await getAuthService(email);
 
-            if (!usuario) generateError("Error, el usuario con el que intenta acceder no existe",401);
+            if (!usuario) generateError("Error, user not exists",401);
 
             req.user = {
                 email: usuario.email,

@@ -70,6 +70,101 @@ export async function loginAuthService(data){
     }
 }
 
+export async function getUpdateAdminAuthService(email,isAdmin){
+    try{
+        const user = await Auth.update(
+            {admin: isAdmin},
+            {
+                where: {
+                    email: email,
+                },
+            }
+        );
+
+        if(!user) generateError("User not found", 404);
+
+        const newUser = await Auth.findOne({
+            where: {
+                email: email,
+            }
+        });
+
+        return newUser;
+    }catch(error){
+        generateError(error.message, error.status);
+    }
+}
+
+export async function getUpdatePasswordAuthService(email,password){
+    try{
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const user = await Auth.update(
+            {password: hashedPassword},
+            {
+                where: {
+                    email: email,
+                },
+            }
+        );
+
+        if(!user) generateError("User not found", 404);
+
+        const newUser = await Auth.findOne({
+            where: {
+                email: email,
+            }
+        });
+
+        return newUser;
+    }catch(error){
+        generateError(error.message, error.status);
+    }
+}
+
+export async function getUpdateEmailAuthService(email,newEmail){
+    try{
+
+        if(email === newEmail) generateError("Emails must be different", 400);
+
+        const existsUser = await Auth.findOne({
+            where: {
+                email: email,
+            }
+        });
+
+        if(!existsUser) generateError("User not found", 404);
+
+        const existsNewEmail = await Auth.findOne({
+            where: {
+                email: newEmail,
+            }
+        });
+
+        if(existsNewEmail) generateError("Email already exists", 400);
+
+        const user = await Auth.update(
+            {email: newEmail},
+            {
+                where: {
+                    email: email,
+                },
+            }
+        );
+
+        if(!user) generateError("Email not updated", 404);
+
+        const newUser = await Auth.findOne({
+            where: {
+                email: newEmail,
+            }
+        });
+
+        return newUser;
+    }catch(error){
+        generateError(error.message, error.status);
+    }
+}
+
 export async function deleteAuthService(email){
     try{
         const user = await Auth.findOne({

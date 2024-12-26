@@ -3,10 +3,14 @@ import {
     registerAuthService, 
     getAuthService, 
     getAuthsService,
+    getUpdateAdminAuthService,
+    getUpdatePasswordAuthService,
+    getUpdateEmailAuthService,
     deleteAuthService,
 } from '../db/services/authService.js';
 import { authSchema } from '../schemas/authSchema.js';
 import { authLoginSchema } from '../schemas/authLoginSchema.js';
+import { authUpdateSchema } from '../schemas/authUpdateSchema.js';
 import jwt from 'jsonwebtoken';
 import { generateToken } from '../utils/token/generateToken.js';
 
@@ -16,7 +20,7 @@ export async function loginCallBack(req, res, next) {
 
         const user = await loginAuthService(validate);
 
-        const { token, refreshToken } = await generateTokens(user);
+        const { token, refreshToken } = await generateToken(user);
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
@@ -89,16 +93,65 @@ export async function getUsersAuth(req, res, next) {
     }
 }
 
+export async function updateAdminUser(req, res, next) {
+    try {
+        const { email } = req.params;
+        const { isAdmin } = req.body;
+
+        const user = await getUpdateAdminAuthService(email,isAdmin);
+
+        res.status(200).json({
+            message: "User updated successfully",
+            user,
+        });
+    }catch(error){
+        next(error);
+    }
+}
+
+export async function updatePasswordUser(req, res, next) {
+    try {
+        const { email } = req.params;
+        const validate = await authUpdateSchema.validateAsync(req.body);
+
+        const user = await getUpdatePasswordAuthService(email,validate.password);
+
+
+        res.status(200).json({
+            message: "User updated successfully",
+            user,
+        });
+    }catch(error){
+        next(error);
+    }
+}
+
+export async function updateEmailUser(req, res, next) {
+    try {
+        const { email } = req.params;
+        const validate = await authUpdateSchema.validateAsync(req.body);
+
+        const user = await getUpdateEmailAuthService(email,validate.email);
+
+
+        res.status(200).json({
+            message: "Email updated successfully",
+            user,
+        });
+    }catch(error){
+        next(error);
+    }
+}
+
 export async function deleteUserAuth(req, res, next) {
     try {
         const { email } = req.params;
 
         const user = await deleteAuthService(email);
 
-        await user.destroy();
-
         res.status(200).json({
             message: "User deleted successfully",
+            user,
         });
     }catch(error){
         next(error);
