@@ -22,5 +22,5 @@ export const Auth = database.define("Auth", {
         defaultValue: false,
     }
 },{
-    tableName: "Auth",
+    tableName: "Auths",
 });
