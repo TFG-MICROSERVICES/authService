@@ -42,8 +42,6 @@ export async function getAuthService(email){
             }
         });
 
-        if(!user) generateError("User not found", 404);
-
         return user;
     }catch(error){
         generateError(error.message, error.status);

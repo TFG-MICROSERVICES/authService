@@ -1,4 +1,5 @@
 import express from 'express';
+import session from 'express-session';
 import dotenv from 'dotenv';
 import authRoutes from './routes/authRoutes.js';
 import morgan from 'morgan';
@@ -16,6 +17,17 @@ EventEmitter.defaultMaxListeners = 30;
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("combined"));
+app.use(
+    session({
+        secret: process.env.SESSION_SECRET,
+        resave: true,
+        saveUninitialized: false,
+        cookie: {
+            secure: false,
+            maxAge: 1000 * 60 * 60 * 24,
+        },
+    })
+);
 
 //ROUTES
 app.use("/auth", authRoutes);

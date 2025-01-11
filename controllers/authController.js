@@ -16,11 +16,18 @@ import { generateToken } from '../utils/token/generateToken.js';
 
 export async function loginCallBack(req, res, next) {
     try {
-        const validate = await authLoginSchema.validateAsync(req.body, { stripUnknown: true });
-
-        const user = await loginAuthService(validate);
+        let user = null;
+        console.log("req.user",req.user);
+        if(!req.user){
+            const validate = await authLoginSchema.validateAsync(req.body, { stripUnknown: true });
+            user = await loginAuthService(validate);
+        }else{
+            user = req.user;
+        }
 
         const { token, refreshToken } = await generateToken(user);
+
+        console.log("token",token,"refresh token", refreshToken);
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
