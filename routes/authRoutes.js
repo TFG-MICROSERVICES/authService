@@ -30,7 +30,7 @@ router.post('/login', validateApiKey, loginCallBack);
 router.get('/google',validateApiKey, loginGoogle);
 
 //http://localhost:3001/auth/google/callback
-router.get('/google/callback',loginCallBackGoogle,loginCallBack);
+router.get('/google/callback', validateApiKey, loginCallBackGoogle,loginCallBack);
 
 //http://localhost:3001/auth/:email
 router.patch('/:email', validateApiKey, authentication, userExists, auth, isAdmin, updateAdminUser);

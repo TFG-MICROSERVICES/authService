@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-import { Auth } from '../../models/auth.js';
 import bcrypt from 'bcrypt';
 import { generateError } from '../../utils/generateError.js';
 import {
@@ -10,17 +9,20 @@ dotenv.config();
 
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL, PASSWD_DEFAULT } = process.env;
 
+//Redirect user to Google login
 export const loginGoogle = (req, res, next) => {
     const redirectUri = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${GOOGLE_CALLBACK_URL}&scope=profile%20email`;
-    res.status(200).json({ redirectUri });
+    res.status(200).json({ 
+        redirectUri 
+    });
 }
 
+//Callback from Google login to get user data and checked if user is registered
 export const loginCallBackGoogle = async (req, res, next) => {
     const { code } = req.query;
 
-    if(!code) generateError('Error: No authorization code received', 400);
-
     try{
+        if(!code) generateError('Error: No authorization code received', 400);
         const response = await fetch('https://oauth2.googleapis.com/token', {
           method: 'POST',
           headers: {
@@ -53,11 +55,10 @@ export const loginCallBackGoogle = async (req, res, next) => {
 
         const existAuth = await getAuthService(user.email);
 
-        if(!existAuth){
-            generateError('Error: User not registered', 404);
-        }else{
-            req.user = existAuth;
-        }
+        //If user is not registered, throw error
+        if(!existAuth) generateError('Error: User not registered', 404);
+        
+        req.user = existAuth;
 
         next();
     }catch(error){
