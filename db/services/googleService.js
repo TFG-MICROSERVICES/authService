@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt';
 import { generateError } from '../../utils/generateError.js';
 import {
     getAuthService,
+    registerAuthService
 } from './authService.js';
 
 dotenv.config();
@@ -56,9 +57,29 @@ export const loginCallBackGoogle = async (req, res, next) => {
         const existAuth = await getAuthService(user.email);
 
         //If user is not registered, throw error
-        if(!existAuth) generateError('Error: User not registered', 404);
-        
-        req.user = existAuth;
+        if(!existAuth){
+            const newAuth = await registerAuthService({
+                email: user.email,
+                password: PASSWD_DEFAULT,
+                admin: false
+            });
+
+            if(!newAuth) generateError('Error: User could not be registered', 500);
+
+            req.user = {
+                email: newAuth.email,
+                password: newAuth.password,
+                admin: newAuth.admin,
+                new: true
+            };
+        }else{
+            req.user = {
+                email: existAuth.email,
+                password: existAuth.password,
+                admin: existAuth.admin,
+                new: false
+            };
+        }
 
         next();
     }catch(error){
