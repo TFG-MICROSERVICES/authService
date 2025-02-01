@@ -17,7 +17,6 @@ import { generateToken } from '../utils/token/generateToken.js';
 export async function loginCallBack(req, res, next) {
     try {
         let user = null;
-        console.log("req.user",req.user);
         if(!req.user){
             const validate = await authLoginSchema.validateAsync(req.body, { stripUnknown: true });
             user = await loginAuthService(validate);
@@ -27,13 +26,17 @@ export async function loginCallBack(req, res, next) {
 
         const { token, refreshToken } = await generateToken(user);
 
-        console.log("token",token,"refresh token", refreshToken);
+        res.cookie('refreshToken', refreshToken, {
+            httpOnly: true,
+            secure: false, // Cambia a true si usas HTTPS
+            sameSite: 'lax',
+            maxAge: 24 * 60 * 60 * 1000, // 1 día
+        });
 
         res.status(200).json({
             message: "User logged in successfully",
             user,
             token,
-            refreshToken,
         });
     } catch (error) {
         next(error);
@@ -71,11 +74,15 @@ export async function register(req, res, next) {
 export async function getUserAuth(req, res, next) {
     try {
         const { email } = req.user;
+        const { authorization } = req.headers;
+        const newToken = req.newToken;
 
         const user = await getAuthService(email);
 
         res.status(200).json({
+            status: 200,
             user,
+            newToken,
         });
     }catch(error){
         next(error);

@@ -40,10 +40,10 @@ router.patch('password/:email', validateApiKey, authentication, userExists, auth
 router.patch('/email/:email', validateApiKey, authentication, userExists, auth, updateEmailUser);
 
 //http://localhost:3001/auth/check
-router.get('/check', validateApiKey, authentication, userExists, auth, getUserAuth);
+router.post('/check', validateApiKey, authentication, userExists, auth, getUserAuth);
 
 //http://localhost:3001/auth/
-router.get('/', validateApiKey, authentication, userExists, auth, isAdmin, getUsersAuth);
+router.post('/', validateApiKey, authentication, userExists, auth, isAdmin, getUsersAuth);
 
 //http://localhost:3001/auth/:email
 router.delete('/:email', validateApiKey, authentication, userExists, auth, isAdmin, deleteUserAuth);

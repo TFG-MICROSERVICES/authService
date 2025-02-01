@@ -4,6 +4,14 @@ import { generateError } from "../../utils/generateError.js";
 
 export async function registerAuthService(data){
     try{
+        const existsUser = await Auth.findOne({
+            where: {
+                email: data.email,
+            }
+        });
+
+        if(existsUser) generateError("Este email ya existe", 400);
+
         const hashedPassword = await bcrypt.hash(data.password, 10);
         data.admin = false;
 
@@ -37,6 +45,7 @@ export async function getAuthsService(){
 export async function getAuthService(email){
     try{
         const user = await Auth.findOne({
+            attributes: ["email","admin"],
             where: {
                 email: email,
             }

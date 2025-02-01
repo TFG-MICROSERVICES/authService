@@ -3,79 +3,52 @@ import jwt from "jsonwebtoken";
 export async function authentication(req, res, next) {
     try {
         const { authorization } = req.headers;
-        if (authorization) {
-            const token = authorization.split(" ")[1]; // Bearer
+        const { refreshToken } = req.body;
 
-            try {
-                const tokenInfo = jwt.verify(token, process.env.JWT_SECRET);
-                req.user = tokenInfo;
-                return next();
-            } catch (error) {
-                if (error.name === "TokenExpiredError") {
-                    const { refreshToken } = req.cookies;
+        if (!authorization || authorization === "undefined") {
+            req.user = null;
+            return next();
+        }
 
-                    if (refreshToken) {
-                        try {
-                            const refreshTokenInfo = jwt.verify(
-                                refreshToken,
-                                process.env.REFRESH_TOKEN_SECRET
-                            );
+        const token = authorization.split(" ")[1].replace(/"/g, ''); // Remove quotes from Bearer token
+        console.log("token:", token);
 
-                            const expiresIn = refreshTokenInfo.exp * 1000 - Date.now();
-                            const expiresInHours = expiresIn / (1000 * 60 * 60);
+        if (!token) {
+            req.user = null;
+            return next();
+        }
 
-                            if (expiresInHours < 1) {
-                                const newRefreshToken = jwt.sign(
-                                    { 
-                                        email: refreshTokenInfo.email,
-                                    },
-                                    process.env.REFRESH_TOKEN_SECRET,
-                                    { expiresIn: "1d" }
-                                );
+        try {
+            const tokenInfo = jwt.verify(token, process.env.JWT_SECRET);
+            const expiresInMinutes = (tokenInfo.exp * 1000 < Date.now() + 4 * 60 * 1000);
 
-                                res.cookie("refreshToken", newRefreshToken, {
-                                    httpOnly: true,
-                                    secure: true,
-                                    sameSite: "None",
-                                    maxAge: 24 * 60 * 60 * 1000,
-                                });
-                            }
-
-                            const newToken = jwt.sign(
-                                { 
-                                    email: refreshTokenInfo.email,
-                                },
-                                process.env.JWT_SECRET,
-                                { expiresIn: "15m" }
-                            );
-
-                            res.setHeader("Authorization", `Bearer ${newToken}`);
-                            req.user = refreshTokenInfo;
-
-                            return next();
-                        } catch (refreshError) {
-                            req.user = null;
-                            return res.status(401).json({ 
-                                message: "Invalid refresh token" 
-                            });
-                        }
-                    } else {
-                        return res.status(401).json({ 
-                            message: "No refresh token provided" 
-                        });
+            if (expiresInMinutes && refreshToken && refreshToken !== "undefined") {
+                const refreshTokenInfo = jwt.verify(refreshToken, process.env.JWT_SECRET);
+                const newToken = jwt.sign(
+                    { 
+                        email: refreshTokenInfo.email,
+                    }, 
+                    process.env.JWT_SECRET,
+                    { 
+                        expiresIn: '15min' 
                     }
-                } else {
-                    return res.status(401).json({ 
-                        message: "Invalid token" 
-                    });
-                }
+                );
+                res.setHeader("Authorization", `Bearer ${newToken}`);
+                const newTokenInfo = jwt.verify(newToken, process.env.JWT_SECRET);
+                req.user = newTokenInfo;
+                req.newToken = newToken;
+                return next();
             }
-        } else {
-            return res.status(401).json({ 
-                message: "Authorization header missing" 
-            });
+
+            req.user = tokenInfo;
+            return next();
+        } catch (jwtError) {
+            console.log("Error específico de JWT:", jwtError.message);
+            req.user = null;
+            return next(jwtError);
         }
     } catch (error) {
+        console.log("Error general:", error);
         req.user = null;
         return next(error);
     }

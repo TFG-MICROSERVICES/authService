@@ -3,6 +3,7 @@ import { generateError } from "../utils/generateError.js";
 
 export async function userExists(req, res, next) {
     try {
+        console.log("req.user", req.user);
         if (req.user?.email) {
             const { email } = req.user;
             const usuario = await getAuthService(email);
