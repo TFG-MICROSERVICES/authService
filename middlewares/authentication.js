@@ -33,6 +33,7 @@ export async function authentication(req, res, next) {
                         expiresIn: '15min' 
                     }
                 );
+                console.log("Nuevo token:", newToken);
                 res.setHeader("Authorization", `Bearer ${newToken}`);
                 const newTokenInfo = jwt.verify(newToken, process.env.JWT_SECRET);
                 req.user = newTokenInfo;
