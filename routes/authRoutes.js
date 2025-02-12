@@ -15,7 +15,6 @@ import { userExists } from "../middlewares/userExists.js";
 import { validateApiKey } from "../middlewares/validateApiKey.js";
 import { auth } from "../middlewares/auth.js";
 import { 
-    loginGoogle,
     loginCallBackGoogle 
 } from "../db/services/googleService.js";
 const router = express.Router();
@@ -25,9 +24,6 @@ router.post('/register',validateApiKey, register);
 
 //http://localhost:3001/auth/login
 router.post('/login', validateApiKey, loginCallBack);
-
-//http://localhost:3001/auth/google
-router.get('/google',validateApiKey, loginGoogle);
 
 //http://localhost:3001/auth/google/callback
 router.get('/google/callback', validateApiKey, loginCallBackGoogle,loginCallBack);

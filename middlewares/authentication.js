@@ -4,14 +4,15 @@ export async function authentication(req, res, next) {
     try {
         const { authorization } = req.headers;
         const { refreshToken } = req.body;
+        console.log(authorization);
 
         if (!authorization || authorization === "undefined") {
             req.user = null;
             return next();
         }
 
-        const token = authorization.split(" ")[1].replace(/"/g, ''); // Remove quotes from Bearer token
-        console.log("token:", token);
+        const token = authorization.split(" ")[1].replace(/"/g, '');
+        console.log(token);
 
         if (!token) {
             req.user = null;
@@ -33,7 +34,6 @@ export async function authentication(req, res, next) {
                         expiresIn: '15min' 
                     }
                 );
-                console.log("Nuevo token:", newToken);
                 res.setHeader("Authorization", `Bearer ${newToken}`);
                 const newTokenInfo = jwt.verify(newToken, process.env.JWT_SECRET);
                 req.user = newTokenInfo;

@@ -26,6 +26,8 @@ export async function loginCallBack(req, res, next) {
 
         const { token, refreshToken } = await generateToken(user);
 
+        console.log("refreshtoken",refreshToken);
+
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
             secure: false, // Cambia a true si usas HTTPS

@@ -10,14 +10,6 @@ dotenv.config();
 
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_CALLBACK_URL, PASSWD_DEFAULT } = process.env;
 
-//Redirect user to Google login
-export const loginGoogle = (req, res, next) => {
-    const redirectUri = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${GOOGLE_CLIENT_ID}&redirect_uri=${GOOGLE_CALLBACK_URL}&scope=profile%20email`;
-    res.status(200).json({ 
-        redirectUri 
-    });
-}
-
 //Callback from Google login to get user data and checked if user is registered
 export const loginCallBackGoogle = async (req, res, next) => {
     const { code } = req.query;
@@ -38,7 +30,11 @@ export const loginCallBackGoogle = async (req, res, next) => {
           })
         });
 
-        if(!response.status === 200) generateError('Error: Google authentication failed', 400);
+        if(response.status !== 200){
+            const error = await response.json();
+            console.log(error);
+            generateError(error.message,error.status);
+        }
 
         const { access_token, id_token, refresh_token } = await response.json();
 
@@ -48,7 +44,7 @@ export const loginCallBackGoogle = async (req, res, next) => {
             }
         });
 
-        if(!userInfoResponse.status === 200) generateError('Error: Google authentication failed', 400);
+        if(userInfoResponse.status !== 200) generateError('Error: Google authentication failed', 400);
 
         const user = await userInfoResponse.json();
 
@@ -83,6 +79,7 @@ export const loginCallBackGoogle = async (req, res, next) => {
 
         next();
     }catch(error){
+        console.log(error);
         next(error);
     }
 };
