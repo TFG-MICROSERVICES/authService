@@ -1,7 +1,7 @@
-import { 
-    loginAuthService, 
-    registerAuthService, 
-    getAuthService, 
+import {
+    loginAuthService,
+    registerAuthService,
+    getAuthService,
     getAuthsService,
     getUpdateAdminAuthService,
     getUpdatePasswordAuthService,
@@ -17,16 +17,16 @@ import { generateToken } from '../utils/token/generateToken.js';
 export async function loginCallBack(req, res, next) {
     try {
         let user = null;
-        if(!req.user){
+        if (!req.user) {
             const validate = await authLoginSchema.validateAsync(req.body, { stripUnknown: true });
             user = await loginAuthService(validate);
-        }else{
+        } else {
             user = req.user;
         }
 
         const { token, refreshToken } = await generateToken(user);
 
-        console.log("refreshtoken",refreshToken);
+        console.log('refreshtoken', refreshToken);
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
@@ -36,7 +36,7 @@ export async function loginCallBack(req, res, next) {
         });
 
         res.status(200).json({
-            message: "User logged in successfully",
+            message: 'User logged in successfully',
             user,
             token,
         });
@@ -53,7 +53,7 @@ export async function register(req, res, next) {
 
         const { token, refreshToken } = await generateToken(user);
 
-        console.log("token",token,"refresh token", refreshToken);
+        console.log('token', token, 'refresh token', refreshToken);
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
@@ -63,11 +63,11 @@ export async function register(req, res, next) {
         });
 
         res.status(201).json({
-            message: "User registered successfully",
+            message: 'User registered successfully',
             user,
             token,
         });
-    }catch(error){
+    } catch (error) {
         console.log(error);
         next(error);
     }
@@ -86,7 +86,7 @@ export async function getUserAuth(req, res, next) {
             user,
             newToken,
         });
-    }catch(error){
+    } catch (error) {
         next(error);
     }
 }
@@ -98,7 +98,7 @@ export async function getUsersAuth(req, res, next) {
         res.status(200).json({
             users,
         });
-    }catch(error){
+    } catch (error) {
         next(error);
     }
 }
@@ -108,13 +108,13 @@ export async function updateAdminUser(req, res, next) {
         const { email } = req.params;
         const { isAdmin } = req.body;
 
-        const user = await getUpdateAdminAuthService(email,isAdmin);
+        const user = await getUpdateAdminAuthService(email, isAdmin);
 
         res.status(200).json({
-            message: "User updated successfully",
+            message: 'User updated successfully',
             user,
         });
-    }catch(error){
+    } catch (error) {
         next(error);
     }
 }
@@ -124,14 +124,13 @@ export async function updatePasswordUser(req, res, next) {
         const { email } = req.params;
         const validate = await authUpdateSchema.validateAsync(req.body);
 
-        const user = await getUpdatePasswordAuthService(email,validate.password);
-
+        const user = await getUpdatePasswordAuthService(email, validate.password);
 
         res.status(200).json({
-            message: "User updated successfully",
+            message: 'User updated successfully',
             user,
         });
-    }catch(error){
+    } catch (error) {
         next(error);
     }
 }
@@ -141,14 +140,13 @@ export async function updateEmailUser(req, res, next) {
         const { email } = req.params;
         const validate = await authUpdateSchema.validateAsync(req.body);
 
-        const user = await getUpdateEmailAuthService(email,validate.email);
-
+        const user = await getUpdateEmailAuthService(email, validate.email);
 
         res.status(200).json({
-            message: "Email updated successfully",
+            message: 'Email updated successfully',
             user,
         });
-    }catch(error){
+    } catch (error) {
         next(error);
     }
 }
@@ -160,11 +158,10 @@ export async function deleteUserAuth(req, res, next) {
         const user = await deleteAuthService(email);
 
         res.status(200).json({
-            message: "User deleted successfully",
+            message: 'User deleted successfully',
             user,
         });
-    }catch(error){
+    } catch (error) {
         next(error);
     }
 }
-    

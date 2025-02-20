@@ -1,16 +1,16 @@
-import { Auth } from "../../models/auth.js";
-import bcrypt from "bcrypt"
-import { generateError } from "../../utils/generateError.js";
+import { Auth } from '../../models/auth.js';
+import bcrypt from 'bcrypt';
+import { generateError } from '../../utils/generateError.js';
 
-export async function registerAuthService(data){
-    try{
+export async function registerAuthService(data) {
+    try {
         const existsUser = await Auth.findOne({
             where: {
                 email: data.email,
-            }
+            },
         });
 
-        if(existsUser) generateError("Este email ya existe", 400);
+        if (existsUser) generateError('Este email ya existe', 400);
 
         const hashedPassword = await bcrypt.hash(data.password, 10);
         data.admin = false;
@@ -21,66 +21,65 @@ export async function registerAuthService(data){
             admin: data.admin,
         });
 
-        if(!user) generateError("Error al crear el usuario", 500);
+        if (!user) generateError('Error al crear el usuario', 500);
 
         return user;
-    }catch(error){
+    } catch (error) {
         generateError(error.message, error.status);
     }
 }
 
-export async function getAuthsService(){
-    try{
+export async function getAuthsService() {
+    try {
         const users = await Auth.findAll();
 
-        if(!users) generateError("Users not found", 404);
+        if (!users) generateError('Users not found', 404);
 
         return users;
-    }catch(error){
+    } catch (error) {
         generateError(error.message, error.status);
     }
 }
 
-
-export async function getAuthService(email){
-    try{
+export async function getAuthService(email) {
+    try {
         const user = await Auth.findOne({
-            attributes: ["email","admin"],
+            attributes: ['email', 'admin'],
             where: {
                 email: email,
-            }
+            },
         });
 
         return user;
-    }catch(error){
+    } catch (error) {
         generateError(error.message, error.status);
     }
 }
 
-export async function loginAuthService(data){
-    try{
+export async function loginAuthService(data) {
+    try {
         const user = await Auth.findOne({
             where: {
                 email: data.email,
-            }
+            },
         });
 
-        if(!user) generateError("User not found", 404);
+        if (!user) generateError('User not found', 404);
 
         const isPasswordValid = await bcrypt.compare(data.password, user.password);
 
-        if(!isPasswordValid) generateError("Invalid password", 400);
+        if (!isPasswordValid) generateError('Invalid password', 400);
 
         return user;
-    }catch(error){
+    } catch (error) {
         generateError(error.message, error.status);
     }
 }
 
-export async function getUpdateAdminAuthService(email,isAdmin){
-    try{
+export async function getUpdateAdminAuthService(email, isAdmin) {
+    try {
         const user = await Auth.update(
-            {admin: isAdmin},
+            { admin: isAdmin },
             {
                 where: {
                     email: email,
@@ -88,25 +87,25 @@ export async function getUpdateAdminAuthService(email,isAdmin){
             }
         );
 
-        if(!user) generateError("User not found", 404);
+        if (!user) generateError('User not found', 404);
 
         const newUser = await Auth.findOne({
             where: {
                 email: email,
-            }
+            },
         });
 
         return newUser;
-    }catch(error){
+    } catch (error) {
         generateError(error.message, error.status);
     }
 }
 
-export async function getUpdatePasswordAuthService(email,password){
-    try{
+export async function getUpdatePasswordAuthService(email, password) {
+    try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await Auth.update(
-            {password: hashedPassword},
+            { password: hashedPassword },
             {
                 where: {
                     email: email,
@@ -114,43 +113,42 @@ export async function getUpdatePasswordAuthService(email,password){
             }
         );
 
-        if(!user) generateError("User not found", 404);
+        if (!user) generateError('User not found', 404);
 
         const newUser = await Auth.findOne({
             where: {
                 email: email,
-            }
+            },
         });
 
         return newUser;
-    }catch(error){
+    } catch (error) {
         generateError(error.message, error.status);
     }
 }
 
-export async function getUpdateEmailAuthService(email,newEmail){
-    try{
-
-        if(email === newEmail) generateError("Emails must be different", 400);
+export async function getUpdateEmailAuthService(email, newEmail) {
+    try {
+        if (email === newEmail) generateError('Emails must be different', 400);
 
         const existsUser = await Auth.findOne({
             where: {
                 email: email,
-            }
+            },
         });
 
-        if(!existsUser) generateError("User not found", 404);
+        if (!existsUser) generateError('User not found', 404);
 
         const existsNewEmail = await Auth.findOne({
             where: {
                 email: newEmail,
-            }
+            },
         });
 
-        if(existsNewEmail) generateError("Email already exists", 400);
+        if (existsNewEmail) generateError('Email already exists', 400);
 
         const user = await Auth.update(
-            {email: newEmail},
+            { email: newEmail },
             {
                 where: {
                     email: email,
@@ -158,34 +156,34 @@ export async function getUpdateEmailAuthService(email,newEmail){
             }
         );
 
-        if(!user) generateError("Email not updated", 404);
+        if (!user) generateError('Email not updated', 404);
 
         const newUser = await Auth.findOne({
             where: {
                 email: newEmail,
-            }
+            },
         });
 
         return newUser;
-    }catch(error){
+    } catch (error) {
         generateError(error.message, error.status);
     }
 }
 
-export async function deleteAuthService(email){
-    try{
+export async function deleteAuthService(email) {
+    try {
         const user = await Auth.findOne({
             where: {
                 email: email,
-            }
+            },
         });
 
-        if(!user) generateError("User not found", 404);
+        if (!user) generateError('User not found', 404);
 
         await user.destroy();
 
         return user;
-    }catch(error){
+    } catch (error) {
         generateError(error.message, error.status);
     }
 }
