@@ -26,12 +26,12 @@ router.post('/login', validateApiKey, loginCallBack);
 //http://localhost:3001/auth/google/callback
 router.get('/google/callback', validateApiKey, loginCallBackGoogle, loginCallBack);
 
-//http://localhost:3001/auth/:email
-router.patch('/:email', validateApiKey, authentication, userExists, auth, isAdmin, updateAdminUser);
+//http://localhost:3001/auth/:id
+router.patch('/:id', validateApiKey, authentication, userExists, auth, isAdmin, updateAdminUser);
 
-router.patch('password/:email', validateApiKey, authentication, userExists, auth, updatePasswordUser);
+router.patch('/password/:id', validateApiKey, authentication, userExists, auth, updatePasswordUser);
 
-router.patch('/email/:email', validateApiKey, authentication, userExists, auth, updateEmailUser);
+router.patch('/email/:id', validateApiKey, authentication, userExists, auth, updateEmailUser);
 
 //http://localhost:3001/auth/check
 router.post('/check', validateApiKey, authentication, userExists, auth, getUserAuth);
@@ -39,7 +39,7 @@ router.post('/check', validateApiKey, authentication, userExists, auth, getUserA
 //http://localhost:3001/auth/
 router.post('/', validateApiKey, authentication, userExists, auth, isAdmin, getUsersAuth);
 
-//http://localhost:3001/auth/:email
-router.delete('/:email', validateApiKey, authentication, userExists, auth, isAdmin, deleteUserAuth);
+//http://localhost:3001/auth/:id
+router.delete('/:id', validateApiKey, authentication, userExists, auth, isAdmin, deleteUserAuth);
 
 export default router;
