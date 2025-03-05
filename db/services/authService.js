@@ -44,7 +44,7 @@ export async function getAuthsService() {
 export async function getAuthService(email) {
     try {
         const user = await Auth.findOne({
-            attributes: ['email', 'admin'],
+            attributes: ['email', 'admin', 'id'],
             where: {
                 email: email,
             },
