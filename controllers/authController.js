@@ -11,7 +11,6 @@ import {
 import { authSchema } from '../schemas/authSchema.js';
 import { authLoginSchema } from '../schemas/authLoginSchema.js';
 import { authUpdateSchema } from '../schemas/authUpdateSchema.js';
-import jwt from 'jsonwebtoken';
 import { generateToken } from '../utils/token/generateToken.js';
 
 export async function loginCallBack(req, res, next) {

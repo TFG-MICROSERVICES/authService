@@ -2,22 +2,22 @@ import jwt from 'jsonwebtoken';
 
 export async function generateToken(user) {
     const token = jwt.sign(
-        { 
+        {
             email: user.email,
-        }, 
+        },
         process.env.JWT_SECRET,
-        { 
-            expiresIn: '15min' 
+        {
+            expiresIn: '15min',
         }
     );
 
     const refreshToken = jwt.sign(
-        { 
+        {
             email: user.email,
-        }, 
+        },
         process.env.JWT_SECRET,
-        { 
-            expiresIn: '1d' 
+        {
+            expiresIn: '1d',
         }
     );
 

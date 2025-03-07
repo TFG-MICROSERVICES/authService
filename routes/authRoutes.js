@@ -29,8 +29,10 @@ router.get('/google/callback', validateApiKey, loginCallBackGoogle, loginCallBac
 //http://localhost:3001/auth/:id
 router.patch('/:id', validateApiKey, authentication, userExists, auth, isAdmin, updateAdminUser);
 
+//http://localhost:3001/auth/password/:id
 router.patch('/password/:id', validateApiKey, authentication, userExists, auth, updatePasswordUser);
 
+//http://localhost:3001/auth/email/:id
 router.patch('/email/:id', validateApiKey, authentication, userExists, auth, updateEmailUser);
 
 //http://localhost:3001/auth/check
