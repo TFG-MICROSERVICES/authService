@@ -59,12 +59,16 @@ export const loginCallBackGoogle = async (req, res, next) => {
 
             if (!newAuth) generateError('Error: User could not be registered', 500);
 
-            req.user = {
-                email: newAuth.email,
-                password: newAuth.password,
-                admin: newAuth.admin,
-                new: true,
-            };
+            res.status(201).json({
+                status: 201,
+                message: 'User registered successfully',
+                user: {
+                    email: newAuth.email,
+                    password: newAuth.password,
+                    admin: newAuth.admin,
+                    new: true,
+                },
+            });
         } else {
             req.user = {
                 email: existAuth.email,

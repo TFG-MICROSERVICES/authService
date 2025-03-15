@@ -33,6 +33,7 @@ export async function loginCallBack(req, res, next) {
         });
 
         res.status(200).json({
+            status: 200,
             message: 'User logged in successfully',
             user,
             token,
@@ -48,19 +49,10 @@ export async function register(req, res, next) {
 
         const user = await registerAuthService(validate);
 
-        const { token, refreshToken } = await generateToken(user);
-
-        res.cookie('refreshToken', refreshToken, {
-            httpOnly: true,
-            secure: false, // Cambia a true si usas HTTPS
-            sameSite: 'lax',
-            maxAge: 24 * 60 * 60 * 1000, // 1 día
-        });
-
         res.status(201).json({
+            status: 201,
             message: 'User registered successfully',
             user,
-            token,
         });
     } catch (error) {
         console.log(error);
@@ -149,6 +141,7 @@ export async function updateEmailUser(req, res, next) {
 export async function deleteUserAuth(req, res, next) {
     try {
         const { email } = req.params;
+        console.log(email);
 
         const user = await deleteAuthService(email);
 

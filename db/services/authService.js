@@ -178,7 +178,7 @@ export async function deleteAuthService(email) {
             },
         });
 
-        if (!user) generateError('User not found', 404);
+        if (!user) generateError('Usuario no encontrado', 404);
 
         await user.destroy();
 

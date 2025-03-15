@@ -42,6 +42,6 @@ router.post('/check', validateApiKey, authentication, userExists, auth, getUserA
 router.post('/', validateApiKey, authentication, userExists, auth, isAdmin, getUsersAuth);
 
 //http://localhost:3001/auth/:id
-router.delete('/:id', validateApiKey, authentication, userExists, auth, isAdmin, deleteUserAuth);
+router.delete('/:email', validateApiKey, authentication, userExists, auth, isAdmin, deleteUserAuth);
 
 export default router;
