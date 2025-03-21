@@ -21,7 +21,7 @@ const router = express.Router();
 router.post('/register', validateApiKey, register);
 
 //http://localhost:3001/auth/login
-router.post('/login', validateApiKey, loginCallBack);
+router.post('/login', loginCallBack);
 
 //http://localhost:3001/auth/google/callback
 router.get('/google/callback', validateApiKey, loginCallBackGoogle, loginCallBack);
