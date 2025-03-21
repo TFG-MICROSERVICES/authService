@@ -27,11 +27,13 @@ export async function loginCallBack(req, res, next) {
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: 'None',
             domain: '.sportsconnect.es',
             maxAge: 24 * 60 * 60 * 1000,
         });
+
+        console.log(refreshToken);
 
         res.status(200).json({
             status: 200,
