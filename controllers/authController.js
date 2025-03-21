@@ -27,8 +27,9 @@ export async function loginCallBack(req, res, next) {
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: true, // Cambia a true si usas HTTPS
+            secure: true,
             sameSite: 'lax',
+            domain: 'app.sportsconnect.es',
             maxAge: 24 * 60 * 60 * 1000, // 1 día
         });
 
