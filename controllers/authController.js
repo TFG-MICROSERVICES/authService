@@ -141,8 +141,7 @@ export async function updateEmailUser(req, res, next) {
 
 export async function deleteUserAuth(req, res, next) {
     try {
-        const { email } = req.params;
-        console.log(email);
+        const { email } = req.body;
 
         const user = await deleteAuthService(email);
 
