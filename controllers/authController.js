@@ -75,6 +75,7 @@ export async function getUserAuth(req, res, next) {
             newToken,
         });
     } catch (error) {
+        console.log(error);
         next(error);
     }
 }
