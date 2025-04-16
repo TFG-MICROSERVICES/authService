@@ -7,7 +7,7 @@ export async function generateToken(user) {
         },
         process.env.JWT_SECRET,
         {
-            expiresIn: '15min',
+            expiresIn: '60min',
         }
     );
 
