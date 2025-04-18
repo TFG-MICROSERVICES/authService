@@ -17,31 +17,31 @@ import { auth } from '../middlewares/auth.js';
 import { loginCallBackGoogle } from '../db/services/googleService.js';
 const router = express.Router();
 
-//http://localhost:3001/auth/register
-router.post('/register', validateApiKey, register);
+//GET http://localhost:3001/auth/
+router.get('/', validateApiKey, authentication, userExists, auth, isAdmin, getUsersAuth);
 
-//http://localhost:3001/auth/login
-router.post('/login', validateApiKey, loginCallBack);
-
-//http://localhost:3001/auth/google/callback
+//GET http://localhost:3001/auth/google/callback
 router.get('/google/callback', validateApiKey, loginCallBackGoogle, loginCallBack);
 
-//http://localhost:3001/auth/:id
-router.patch('/:id', validateApiKey, authentication, userExists, auth, isAdmin, updateAdminUser);
+//POST http://localhost:3001/auth/register
+router.post('/register', validateApiKey, register);
 
-//http://localhost:3001/auth/password/:id
-router.patch('/password/:id', validateApiKey, authentication, userExists, auth, updatePasswordUser);
+//POST http://localhost:3001/auth/login
+router.post('/login', validateApiKey, loginCallBack);
 
-//http://localhost:3001/auth/email/:id
-router.patch('/email/:id', validateApiKey, authentication, userExists, auth, updateEmailUser);
-
-//http://localhost:3001/auth/check
+//POST http://localhost:3001/auth/check
 router.post('/check', validateApiKey, authentication, userExists, auth, getUserAuth);
 
-//http://localhost:3001/auth/
-router.post('/', validateApiKey, authentication, userExists, auth, isAdmin, getUsersAuth);
+//PATCH http://localhost:3001/auth/:id
+router.patch('/:id', validateApiKey, authentication, userExists, auth, isAdmin, updateAdminUser);
 
-//http://localhost:3001/auth/:id
+//PATCH http://localhost:3001/auth/password/:id
+router.patch('/password/:id', validateApiKey, authentication, userExists, auth, updatePasswordUser);
+
+//PATCH http://localhost:3001/auth/email/:id
+router.patch('/email/:id', validateApiKey, authentication, userExists, auth, updateEmailUser);
+
+//DELETE http://localhost:3001/auth/:id
 router.delete('/', validateApiKey, authentication, userExists, auth, isAdmin, deleteUserAuth);
 
 export default router;

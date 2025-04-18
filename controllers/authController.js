@@ -85,7 +85,7 @@ export async function getUsersAuth(req, res, next) {
         const users = await getAuthsService();
 
         res.status(200).json({
-            users,
+            data: users,
         });
     } catch (error) {
         next(error);
