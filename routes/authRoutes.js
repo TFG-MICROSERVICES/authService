@@ -36,10 +36,10 @@ router.post('/check', validateApiKey, authentication, userExists, auth, getUserA
 router.patch('/:id', validateApiKey, authentication, userExists, auth, isAdmin, updateAdminUser);
 
 //PATCH http://localhost:3001/auth/password/:id
-router.patch('/password/:id', validateApiKey, authentication, userExists, auth, updatePasswordUser);
+router.patch('/password/:email', validateApiKey, authentication, userExists, auth, updatePasswordUser);
 
-//PATCH http://localhost:3001/auth/email/:id
-router.patch('/email/:id', validateApiKey, authentication, userExists, auth, updateEmailUser);
+//PATCH http://localhost:3001/auth/email/:email
+router.patch('/email/:email', validateApiKey, authentication, userExists, auth, updateEmailUser);
 
 //DELETE http://localhost:3001/auth/:id
 router.delete('/', validateApiKey, authentication, userExists, auth, isAdmin, deleteUserAuth);

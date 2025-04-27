@@ -44,7 +44,7 @@ export async function getAuthsService() {
 export async function getAuthService(email) {
     try {
         const user = await Auth.findOne({
-            attributes: ['email', 'admin', 'id'],
+            attributes: ['email', 'admin', 'id', 'password'],
             where: {
                 email: email,
             },
@@ -101,7 +101,7 @@ export async function getUpdateAdminAuthService(email, isAdmin) {
     }
 }
 
-export async function getUpdatePasswordAuthService(email, password) {
+export async function updatePasswordAuthService(email, password) {
     try {
         const hashedPassword = await bcrypt.hash(password, 10);
         const user = await Auth.update(
@@ -129,15 +129,13 @@ export async function getUpdatePasswordAuthService(email, password) {
 
 export async function getUpdateEmailAuthService(email, newEmail) {
     try {
-        if (email === newEmail) generateError('Emails must be different', 400);
-
         const existsUser = await Auth.findOne({
             where: {
                 email: email,
             },
         });
 
-        if (!existsUser) generateError('User not found', 404);
+        if (!existsUser) generateError('Usuario no encontrado', 404);
 
         const existsNewEmail = await Auth.findOne({
             where: {
@@ -145,7 +143,7 @@ export async function getUpdateEmailAuthService(email, newEmail) {
             },
         });
 
-        if (existsNewEmail) generateError('Email already exists', 400);
+        if (existsNewEmail) generateError('Este correo ya existe', 400);
 
         const user = await Auth.update(
             { email: newEmail },
@@ -156,15 +154,9 @@ export async function getUpdateEmailAuthService(email, newEmail) {
             }
         );
 
-        if (!user) generateError('Email not updated', 404);
+        if (!user) generateError('EL correo no ha podido ser actualizado', 500);
 
-        const newUser = await Auth.findOne({
-            where: {
-                email: newEmail,
-            },
-        });
-
-        return newUser;
+        return true;
     } catch (error) {
         generateError(error.message, error.status);
     }

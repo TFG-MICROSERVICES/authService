@@ -4,14 +4,16 @@ import {
     getAuthService,
     getAuthsService,
     getUpdateAdminAuthService,
-    getUpdatePasswordAuthService,
     getUpdateEmailAuthService,
     deleteAuthService,
+    updatePasswordAuthService,
 } from '../db/services/authService.js';
 import { authSchema } from '../schemas/authSchema.js';
 import { authLoginSchema } from '../schemas/authLoginSchema.js';
 import { authUpdateSchema } from '../schemas/authUpdateSchema.js';
 import { generateToken } from '../utils/token/generateToken.js';
+import { generateError } from '../utils/generateError.js';
+import bcrypt from 'bcrypt';
 
 export async function loginCallBack(req, res, next) {
     try {
@@ -27,9 +29,7 @@ export async function loginCallBack(req, res, next) {
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: true,
-            sameSite: 'None',
-            domain: '.sportsconnect.es',
+            sameSite: 'Lax',
             maxAge: 24 * 60 * 60 * 1000,
         });
 
@@ -46,7 +46,7 @@ export async function loginCallBack(req, res, next) {
 
 export async function register(req, res, next) {
     try {
-        const validate = await authSchema.validateAsync(req.body);
+        const validate = await authSchema.validateAsync(req.body, { stripUnknown: true });
 
         const user = await registerAuthService(validate);
 
@@ -64,7 +64,6 @@ export async function register(req, res, next) {
 export async function getUserAuth(req, res, next) {
     try {
         const { email } = req.user;
-        const { authorization } = req.headers;
         const newToken = req.newToken;
 
         const user = await getAuthService(email);
@@ -97,11 +96,11 @@ export async function updateAdminUser(req, res, next) {
         const { email } = req.params;
         const { isAdmin } = req.body;
 
-        const user = await getUpdateAdminAuthService(email, isAdmin);
+        await getUpdateAdminAuthService(email, isAdmin);
 
         res.status(200).json({
-            message: 'User updated successfully',
-            user,
+            status: 200,
+            message: 'Rol del usuario actualizado correctamente',
         });
     } catch (error) {
         next(error);
@@ -111,13 +110,25 @@ export async function updateAdminUser(req, res, next) {
 export async function updatePasswordUser(req, res, next) {
     try {
         const { email } = req.params;
-        const validate = await authUpdateSchema.validateAsync(req.body);
+        const { current_password } = req.body;
 
-        const user = await getUpdatePasswordAuthService(email, validate.password);
+        const user = await getAuthService(email);
+
+        const data = user.toJSON();
+
+        const isPasswordValid = await bcrypt.compare(current_password, data.password);
+
+        if(!isPasswordValid){
+            generateError('Contraseña actual incorrecta');
+        }
+        
+        const validate = await authUpdateSchema.validateAsync(req.body, { stripUnknown: true });
+
+        await updatePasswordAuthService(email, validate.password);
 
         res.status(200).json({
-            message: 'User updated successfully',
-            user,
+            status: 200,
+            message: 'Usuario actualizado correctamente',
         });
     } catch (error) {
         next(error);
@@ -127,13 +138,13 @@ export async function updatePasswordUser(req, res, next) {
 export async function updateEmailUser(req, res, next) {
     try {
         const { email } = req.params;
-        const validate = await authUpdateSchema.validateAsync(req.body);
+        const validate = await authUpdateSchema.validateAsync(req.body, { stripUnknown: true });
 
-        const user = await getUpdateEmailAuthService(email, validate.email);
+        await getUpdateEmailAuthService(email, validate.email);
 
         res.status(200).json({
-            message: 'Email updated successfully',
-            user,
+            status: 200,
+            message: 'Correo actualizado correctamente',
         });
     } catch (error) {
         next(error);
@@ -144,11 +155,11 @@ export async function deleteUserAuth(req, res, next) {
     try {
         const { email } = req.body;
 
-        const user = await deleteAuthService(email);
+        await deleteAuthService(email);
 
         res.status(200).json({
-            message: 'User deleted successfully',
-            user,
+            status: 200,
+            message: 'Usuario eliminado correctamente',
         });
     } catch (error) {
         next(error);
