@@ -35,7 +35,7 @@ export async function loginCallBack(req, res, next) {
 
         res.status(200).json({
             status: 200,
-            message: 'User logged in successfully',
+            message: 'Usuario logueado correctamente',
             user,
             token,
         });
@@ -52,7 +52,7 @@ export async function register(req, res, next) {
 
         res.status(201).json({
             status: 201,
-            message: 'User registered successfully',
+            message: 'Usuario registrado correctamente',
             user,
         });
     } catch (error) {

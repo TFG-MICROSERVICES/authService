@@ -41,6 +41,7 @@ app.use((req, res, next) => {
 
 //MIDDLEWARE FOR ERROR HANDLING
 app.use((err, req, res, next) => {
+    console.log("error",err);
     res.status(err.status || 500).json({
         message: err.message,
     });
