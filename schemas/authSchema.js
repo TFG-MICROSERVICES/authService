@@ -2,12 +2,12 @@ import Joi from 'joi';
 
 export const authSchema = Joi.object({
     email: Joi.string().email().required().messages({
-        'string.email': 'The email must be a valid email',
-        'any.required': 'The email is required',
+        'string.email': 'El email debe ser un email válido',
+        'any.required': 'El email es obligatorio',
     }),
     password: Joi.string().pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*_])[A-Za-z\\d!@#$%^&*_]{8,}$')).required().messages({
         'string.pattern.base':
-            'The password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character',
-        'any.required': 'The password is required',
+            'La contraseña debe tener al menos 8 caracteres e incluir al menos una mayúscula, una minúscula, un número, y un caracter especial',
+        'any.required': 'La contraseña es obligatoria',
     }),
 });
