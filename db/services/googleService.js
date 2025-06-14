@@ -33,6 +33,8 @@ export const loginCallBackGoogle = async (req, res, next) => {
             generateError(error.message, error.status);
         }
 
+        console.log("response google", response);
+
         const { access_token, id_token, refresh_token } = await response.json();
 
         const userInfoResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
