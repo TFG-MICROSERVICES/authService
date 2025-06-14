@@ -27,13 +27,13 @@ export const loginCallBackGoogle = async (req, res, next) => {
             }),
         });
 
+        console.log("response google", response);
+
         if (response.status !== 200) {
             const error = await response.json();
             console.log(error);
-            generateError(error.message, error.status);
+            generateError(error.message, response.status);
         }
-
-        console.log("response google", response);
 
         const { access_token, id_token, refresh_token } = await response.json();
 
