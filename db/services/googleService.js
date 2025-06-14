@@ -51,26 +51,23 @@ export const loginCallBackGoogle = async (req, res, next) => {
 
         const existAuth = await getAuthService(user.email);
 
-        //If user is not registered, throw error
+        //Si el usuario no esta en el sistema lanzamos error diciendo que no existe en el sistema dicho correo
         if (!existAuth) {
-            const newAuth = await registerAuthService({
-                email: user.email,
-                password: PASSWD_DEFAULT,
-                admin: false,
-            });
+            // const newAuth = await registerAuthService({
+            //     email: user.email,
+            //     password: PASSWD_DEFAULT,
+            //     admin: false,
+            // });
 
-            if (!newAuth) generateError('Error: User could not be registered', 500);
+            // if (!newAuth) generateError('Error: User could not be registered', 500);
 
-            res.status(201).json({
-                status: 201,
-                message: 'User registered successfully',
-                user: {
-                    email: newAuth.email,
-                    password: newAuth.password,
-                    admin: newAuth.admin,
-                    new: true,
-                },
-            });
+            // req.user = {
+            //     email: newAuth.email,
+            //     password: newAuth.password,
+            //     admin: newAuth.admin,
+            //     new: false,
+            // };
+            generateError('El correo no esta registrado en el sistema', 400);
         } else {
             req.user = {
                 email: existAuth.email,
