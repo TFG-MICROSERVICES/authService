@@ -41,7 +41,7 @@ router.patch('/password/:email', validateApiKey, authentication, userExists, aut
 //PATCH http://localhost:3001/auth/email/:email
 router.patch('/email/:email', validateApiKey, authentication, userExists, auth, updateEmailUser);
 
-//DELETE http://localhost:3001/auth/:id
-router.delete('/', validateApiKey, authentication, userExists, auth, isAdmin, deleteUserAuth);
+//DELETE http://localhost:3001/auth/:email
+router.delete('/:email', validateApiKey, authentication, userExists, auth, isAdmin, deleteUserAuth);
 
 export default router;
